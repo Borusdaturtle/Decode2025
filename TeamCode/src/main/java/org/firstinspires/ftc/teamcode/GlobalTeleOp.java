@@ -89,6 +89,7 @@ public class GlobalTeleOp extends OpMode {
     final double CLAW_CLOSED = 0;
     final double WHEEL_SPEED_MAX = 1;
     final double WHEEL_SPEED_LIMITED = 0.17;
+    final double SORTING_SPIN = 0;
 
     // Threshold where speed is reduced when slide is extended
     final double SLIDE_POSITION_THRESHOLD = 700;
@@ -101,6 +102,7 @@ public class GlobalTeleOp extends OpMode {
     double clawTarget = CLAW_CLOSED;
     double slideTarget = SLIDE_MIN;
     double wheelSpeed = WHEEL_SPEED_MAX;
+    double sortTarget = SORTING_SPIN;
     // ... then set current state to match above position
     RobotStates currentState = RobotStates.HOME;
     RobotStates requestedState = RobotStates.HOME;
@@ -115,6 +117,7 @@ public class GlobalTeleOp extends OpMode {
     private DcMotor shoulder;
     private Servo wrist;
     private Servo claw;
+    private Servo sort;
 
     double oldTime = 0;
 
@@ -189,7 +192,7 @@ public class GlobalTeleOp extends OpMode {
         shoulder = hardwareMap.get(DcMotor.class, "arm");
         claw = hardwareMap.get(Servo.class, "claw");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        lift = hardwareMap.get(DcMotor.class, "flipper");
+        sort = hardwareMap.get(Servo.class, "spin");
 
         // set encoders
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -417,12 +420,13 @@ public class GlobalTeleOp extends OpMode {
         // telemetry.addData("Slide Current / Target ", "(%.2f, %.2f)", slide.getCurrentPosition(), slideTarget);
     }
 
-    public void moveLift(){
-        lift.setTargetPosition((int)liftTarget);
-        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        lift.setPower(Math.abs(LIFT_POWER));
+    public void moveSort(){
+         sort.setTargetPosition((int)sortTarget);
+        
     }
-    
+
+        
+
     @Override
     public void loop() {
         moveRobot();
@@ -433,6 +437,7 @@ public class GlobalTeleOp extends OpMode {
         moveSlide();
         moveWrist();
         moveClaw();
+        moveSort();
 
         telemetry.addData("Robot X: ", odo.getPosX());
         telemetry.addData("Robot X: ", odo.getPosY());
