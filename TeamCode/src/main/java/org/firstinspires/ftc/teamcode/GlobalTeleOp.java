@@ -189,6 +189,7 @@ public class GlobalTeleOp extends OpMode {
         shoulder = hardwareMap.get(DcMotor.class, "arm");
         claw = hardwareMap.get(Servo.class, "claw");
         wrist = hardwareMap.get(Servo.class, "wrist");
+        lift = hardwareMap.get(DcMotor.class, "flipper");
 
         // set encoders
         shoulder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -416,6 +417,12 @@ public class GlobalTeleOp extends OpMode {
         // telemetry.addData("Slide Current / Target ", "(%.2f, %.2f)", slide.getCurrentPosition(), slideTarget);
     }
 
+    public void moveLift(){
+        lift.setTargetPosition((int)liftTarget);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(Math.abs(LIFT_POWER));
+    }
+    
     @Override
     public void loop() {
         moveRobot();
